@@ -33,7 +33,7 @@ It can also be passed during the jar execution as mentioned below.
     java -DWHAPI_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -jar target/whatsapp-bot-1.0.jar
 
 
-Configure the ngrok https url with the application listener endpoint in this case (/webhook) as the URL in the whapi dashboard. 
+Configure the ngrok https url with the application listener endpoint in this case <b>/webhook</b> as the URL in the whapi dashboard. 
  
 
 
