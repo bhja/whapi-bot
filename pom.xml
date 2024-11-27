@@ -14,7 +14,7 @@
     <name>whatsapp-bot</name>
     <description>whatsapp-bot</description>
     <properties>
-        <java.version>21</java.version>
+        <java.version>17</java.version>
         <okhttp.version>2.7.5</okhttp.version>
     </properties>
     <dependencies>
