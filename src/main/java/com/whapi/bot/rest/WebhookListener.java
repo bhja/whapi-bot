@@ -20,13 +20,12 @@ public class WebhookListener {
     /**
      * Listens to the whatsapp events. The service processes the request and sends back a response as per defined
      * criteria
-     *
      * @param events {@link WebhookPayload}
      */
     @PostMapping("/messages")
     @Async
     public void events(@RequestBody WebhookPayload events) {
-        log.info("Received events [{}]", events);
+        log.info("Events received[{}]", events);
         service.processMessages(events.getMessages());
     }
 }

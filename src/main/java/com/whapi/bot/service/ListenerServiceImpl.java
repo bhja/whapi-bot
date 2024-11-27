@@ -21,8 +21,6 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
@@ -37,8 +35,8 @@ public class ListenerServiceImpl
                                                                   "video", "Send video", "document", "Send document",
                                                                   "unknown", "Unknown message");
 
-    private final static Map<String,String> fileMap = Map.of("video","file_example_MP4_480_1_5MG.mp4","image","file_example_JPG_100kB.jpg","vcard","sample-vcard.txt",
-                                                             "document","file-example_PDF_500_kB.pdf");
+    private final static Map<String, String> fileMap = Map.of("video", "file_example_MP4_480_1_5MG.mp4", "image", "file_example_JPG_100kB.jpg", "vcard", "sample-vcard.txt",
+                                                              "document", "file-example_PDF_500_kB.pdf");
     private final Config config;
     private final ObjectMapper objectMapper;
     private final OkHttpClient okHttpClient;
@@ -174,7 +172,7 @@ public class ListenerServiceImpl
      * @param type String
      * @return {@link InputStream}
      */
-    protected InputStream getFile(String type)  {
+    protected InputStream getFile(String type) {
         return getClass().getClassLoader().getResourceAsStream(config.getFilePath() + File.separator + fileMap.get(type));
     }
 
