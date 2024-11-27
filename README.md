@@ -5,7 +5,7 @@
     Maven 3.3.2 or later
 
 Configure the token as enviornment variable at runtime as illustrated below
-WHAPI_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+WHAPI_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 ![token](https://github.com/user-attachments/assets/98b624da-bf0e-474a-bce1-81384e103faa)
 
