@@ -37,7 +37,7 @@ public class ListenerServiceImpl
     static {
         responseMap.put("help", "text1");
         responseMap.put("command", "text2");
-        responseMap.put("image", "Send  image");
+        responseMap.put("image", "Send image");
         responseMap.put("video", "Send video");
         responseMap.put("document", "Send document");
         responseMap.put("unknown", "Unknown message");
@@ -105,6 +105,7 @@ public class ListenerServiceImpl
                     }
                     log.info("Response received [{}]", response);
                 } else {
+                    // Only text type is handled for the message. Rest of them are not yet handled
                     log.warn("{} type not handled", message.getType());
                 }
             }
@@ -129,6 +130,14 @@ public class ListenerServiceImpl
         }
     }
 
+    /**
+     * Executes the rest call and only if the response is success the response string is returned else
+     * exception is thrown.
+     * @param requestBody
+     * @param endpoint
+     * @return String response
+     * @throws IOException
+     */
     protected String execute(RequestBody requestBody, String endpoint) throws IOException {
         Request request = new Request.Builder()
                 .url(String.format("%s/%s", config.getWhapiApiUrl(), endpoint))
@@ -138,7 +147,8 @@ public class ListenerServiceImpl
         if (response.isSuccessful()) {
             return response.body().string();
         } else {
-            log.warn("Issue with the request " + response.message());
+            log.warn("Issue with the request . Response code {} , reason  {}", response.code(),
+                     response.body().string());
             throw new RuntimeException(response.message());
         }
     }
@@ -148,7 +158,7 @@ public class ListenerServiceImpl
      *
      * @param builder
      * @param endpoint
-     * @return
+     * @return String response
      */
     protected String postMultipart(MultipartBuilder builder, String endpoint) {
         try {
@@ -159,6 +169,12 @@ public class ListenerServiceImpl
         }
     }
 
+    /**
+     * Returns the file based on the type requested. Eg: video,image ,vcard.
+     * @param type
+     * @return {@link File}
+     * @throws IOException if type is not one of the known case an exception is throw
+     */
     protected File getFile(String type) throws IOException {
         return switch (type) {
             case "image" -> new ClassPathResource(config.getFilePath() + File.separator + "file_example_JPG_100kB" +
@@ -168,7 +184,7 @@ public class ListenerServiceImpl
             case "vcard" -> new ClassPathResource(config.getFilePath() + File.separator + "sample-vcard.txt").getFile();
             case "document" ->
                     new ClassPathResource(config.getFilePath() + File.separator + "file-example_PDF_500_kB.pdf").getFile();
-            default -> throw new RuntimeException("Not handled");
+            default -> throw new IOException("Not handled file type " + type);
         };
     }
 
