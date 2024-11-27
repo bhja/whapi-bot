@@ -80,6 +80,7 @@ public class ListenerServiceImpl
                                 response = postMultipart(multipartBody, "messages/" + body);
                             }
                         }
+                        // A contact card is requested by user. Send the sample response
                         case "vcard" -> {
                             try (InputStream stream = getFile(body)) {
                                 ContactMessage contactMessage =
