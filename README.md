@@ -23,14 +23,17 @@ mvn clean package
 ###### For Windows
     set WHAPI_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-To execute the jar as shown below if variable is set as shown above. 
+###### Jar Execution 
+If the variable is set with one of the above enviornment option the jar can be executed as given below.
 
     java -jar ./whatsapp-bot-1.0.jar
-The token can also be passed during the jar execution as shown below.
+
+It can also be passed during the jar execution as mentioned below.
 
     java -DWHAPI_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -jar target/whatsapp-bot-1.0.jar
 
-Configure the webhook url in the whapi dashboard to listen to the messages and start testing.
+
+Configure the ngrok https url with the application listener endpoint as the URL in the whapi dashboard.
 
 
 
