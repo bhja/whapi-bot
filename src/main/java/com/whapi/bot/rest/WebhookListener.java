@@ -20,6 +20,7 @@ public class WebhookListener {
     /**
      * Listens to the whatsapp events. The service processes the request and sends back a response as per defined
      * criteria
+     *
      * @param events {@link WebhookPayload}
      */
     @PostMapping("/messages")

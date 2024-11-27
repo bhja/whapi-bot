@@ -16,9 +16,8 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ContactMessage
         extends BaseMessage {
-
-    String vcard;
-    String name;
+    private String vcard;
+    private String name;
 
     @Builder
     public ContactMessage(String to, String quoted, Integer ephemeral, String edit, List<String> mentions,

@@ -56,29 +56,24 @@ public class ListenerServiceImpl
                 String chatId = message.getChatId();
                 String response;
                 if (message.getType().equals("text")) {
-                    //Extract the message sent irrespective of the character case.
                     String body = ((String) message.getText().get("body")).toLowerCase();
-                    String caption = responseMap.get(body);
                     switch (body) {
                         //If help/command based on the lookup response is sent to the user.
                         case "help", "command" -> {
                             TextMessage txtMessage =
-                                    TextMessage.builder().to(chatId).body(caption).build();
+                                    TextMessage.builder().to(chatId).body(responseMap.get(body)).build();
                             response = postJson(txtMessage, "messages/text");
                         }
                         //If the text is a multimedia request ,  process the request for multimedia
                         case "video", "image", "document" -> {
-
                             //Request body contains the file contents and the MediaType based on the filename extension
                             try (InputStream stream = getFile(body)) {
                                 RequestBody fileBody =
-                                        RequestBody.create(MediaType.parse(MediaTypeFactory.getMediaType(fileMap.get(body)).toString()), stream.readAllBytes());
+                                        RequestBody.create(MediaType.parse(MediaTypeFactory.
+                                                                                   getMediaType(fileMap.get(body)).toString()), stream.readAllBytes());
                                 MultipartBuilder multipartBody = new MultipartBuilder().type(MultipartBuilder.FORM)
-                                                                                       .addFormDataPart("to",
-                                                                                                        chatId)
-                                                                                       .addFormDataPart("media", fileMap.get(body), fileBody)
-                                                                                       .addFormDataPart("caption",
-                                                                                                        caption);
+                                                                                       .addFormDataPart("to", chatId).addFormDataPart("media", fileMap.get(body), fileBody)
+                                                                                       .addFormDataPart("caption", responseMap.get(body));
                                 response = postMultipart(multipartBody, "messages/" + body);
                             }
                         }
@@ -88,7 +83,6 @@ public class ListenerServiceImpl
                                         ContactMessage.builder().name("Whapi test").to(chatId).vcard(new String(stream.readAllBytes())).build();
                                 response = postJson(contactMessage, "messages/contact");
                             }
-
                         }
                         default -> {
                             //If the command is unknown , we leave it as is.
@@ -168,7 +162,7 @@ public class ListenerServiceImpl
 
 
     /**
-     * Returns the filestream
+     * Returns the file as filestream
      * @param type String
      * @return {@link InputStream}
      */

@@ -20,7 +20,8 @@ mvn clean package
 
 To execute the jar as shown below if variable is set as shown above. 
     java -jar ./whatsapp-bot-1.0.jar
-The token can also be passed during the jar execution as shown below
+The token can also be passed during the jar execution as shown below.
+
     java -DWHAPI_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -jar target/whatsapp-bot-1.0.jar
 
 Configure the webhook in the whapi dashboard to listen to the messages.
