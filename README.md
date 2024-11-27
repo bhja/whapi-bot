@@ -11,8 +11,9 @@ WHAPI_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 
 
 
-Start ngrok to listen to the requests that are being sent to the channel. The default port is 8080 
-ngrok http 8080
+Start ngrok to listen to the requests that are being sent to the channel. The default port is 8080.
+   
+    ngrok http 8080
 
 ### Build the code 
 mvn clean package 
