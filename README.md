@@ -24,7 +24,7 @@ The token can also be passed during the jar execution as shown below.
 
     java -DWHAPI_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -jar target/whatsapp-bot-1.0.jar
 
-Configure the webhook in the whapi dashboard to listen to the messages.
+Configure the webhook url in the whapi dashboard to listen to the messages and start testing.
 
 
 
