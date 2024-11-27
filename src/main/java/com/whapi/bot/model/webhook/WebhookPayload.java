@@ -41,5 +41,5 @@ import java.util.List;
 public class WebhookPayload {
     @JsonProperty("channel_id")
     private String channelId;
-    private List<Message> messages;
+    private List<MessagePayload> messages;
 }

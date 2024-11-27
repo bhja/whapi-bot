@@ -14,7 +14,7 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
 @ToString
-public class Message {
+public class MessagePayload {
     private String id;
     @JsonProperty("from_me")
     private boolean fromMe;

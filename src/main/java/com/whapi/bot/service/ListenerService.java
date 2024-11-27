@@ -1,9 +1,9 @@
 package com.whapi.bot.service;
 
-import com.whapi.bot.model.webhook.Message;
+import com.whapi.bot.model.webhook.MessagePayload;
 
 import java.util.List;
 
 public interface ListenerService {
-    void processMessages(List<Message> payload);
+    void processMessages(List<MessagePayload> payload);
 }

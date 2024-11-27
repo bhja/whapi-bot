@@ -12,7 +12,7 @@ import com.whapi.bot.config.Config;
 import com.whapi.bot.model.BaseMessage;
 import com.whapi.bot.model.ContactMessage;
 import com.whapi.bot.model.TextMessage;
-import com.whapi.bot.model.webhook.Message;
+import com.whapi.bot.model.webhook.MessagePayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaTypeFactory;
@@ -44,12 +44,12 @@ public class ListenerServiceImpl
     /**
      * Handles the processing of the request and sends the response based on the type.
      *
-     * @param messages {@link Message}
+     * @param messages {@link MessagePayload}
      */
     @Override
-    public void processMessages(List<Message> messages) {
+    public void processMessages(List<MessagePayload> messages) {
         try {
-            for (Message message : messages) {
+            for (MessagePayload message : messages) {
                 //Ignore message from self i.e. in this case the bot responses.
                 if (message.isFromMe())
                     continue;

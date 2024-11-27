@@ -5,7 +5,6 @@ import com.whapi.bot.service.ListenerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +25,7 @@ public class WebhookListener {
     @PostMapping("/messages")
     @Async
     public void receive(@RequestBody WebhookPayload events) {
-        log.info("Events received[{}]", events);
+        log.info("Events received \n [{}] \n", events);
         service.processMessages(events.getMessages());
     }
 

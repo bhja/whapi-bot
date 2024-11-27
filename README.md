@@ -1,6 +1,6 @@
-##### Installation
+### Installation
 
-##### Requirement
+### Requirement
 Java 17 or later
 Maven 3.3.2 or later
 
@@ -10,9 +10,9 @@ WHAPI_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 Start ngrok to listen to the requests that are being sent to the channel. The default port is 8080 
 ngrok http 8080
 
-## Build the code 
+### Build the code 
 mvn clean package 
-## Configure whapi token
+### Configure whapi token
 ###### For MAC/Linux set the variable as shown 
     export WHAPI_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 ###### For Windows
@@ -21,9 +21,9 @@ mvn clean package
 To execute the jar as shown below if variable is set as shown above. 
     java -jar ./whatsapp-bot-1.0.jar
 The token can also be passed during the jar execution as shown below
-    java -DWHAPI_TOKEN=H36AASGagp9CE3u7cFBB2GodKKYVa28J -jar target/whatsapp-bot-1.0.jar
+    java -DWHAPI_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -jar target/whatsapp-bot-1.0.jar
 
-
+Configure the webhook in the whapi dashboard to listen to the messages.
 
 
 
