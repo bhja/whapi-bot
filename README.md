@@ -7,6 +7,9 @@
 Configure the token as enviornment variable at runtime as illustrated below
 WHAPI_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 
+![tokenparam](https://github.com/user-attachments/assets/9aa95a71-4156-4d3e-a8e4-1ab5894751a4)
+
+
 Start ngrok to listen to the requests that are being sent to the channel. The default port is 8080 
 ngrok http 8080
 
