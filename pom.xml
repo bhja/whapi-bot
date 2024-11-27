@@ -15,7 +15,7 @@
     <description>whatsapp-bot</description>
     <properties>
         <java.version>17</java.version>
-        <okhttp.version>2.7.5</okhttp.version>
+        <okhttp.version>4.1.0</okhttp.version>
     </properties>
     <dependencies>
         <dependency>
@@ -34,7 +34,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.squareup.okhttp</groupId>
+            <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
             <version>${okhttp.version}</version>
         </dependency>

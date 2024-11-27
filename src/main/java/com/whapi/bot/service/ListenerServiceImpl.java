@@ -1,13 +1,6 @@
 package com.whapi.bot.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.MultipartBuilder;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
 import com.whapi.bot.config.Config;
 import com.whapi.bot.model.BaseMessage;
 import com.whapi.bot.model.ContactMessage;
@@ -15,6 +8,13 @@ import com.whapi.bot.model.TextMessage;
 import com.whapi.bot.model.webhook.MessagePayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.springframework.http.MediaTypeFactory;
 import org.springframework.stereotype.Service;
 
@@ -71,9 +71,12 @@ public class ListenerServiceImpl
                                 RequestBody fileBody =
                                         RequestBody.create(MediaType.parse(MediaTypeFactory.
                                                                                    getMediaType(fileMap.get(body)).toString()), stream.readAllBytes());
-                                MultipartBuilder multipartBody = new MultipartBuilder().type(MultipartBuilder.FORM)
-                                                                                       .addFormDataPart("to", chatId).addFormDataPart("media", fileMap.get(body), fileBody)
-                                                                                       .addFormDataPart("caption", responseMap.get(body));
+                                MultipartBody multipartBody = new
+                                        MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("to", chatId).addFormDataPart(
+                                                                       "media"
+                                                                       , fileMap.get(body), fileBody)
+                                                               .addFormDataPart("caption",
+                                                                                responseMap.get(body)).build();
                                 response = postMultipart(multipartBody, "messages/" + body);
                             }
                         }
@@ -147,13 +150,13 @@ public class ListenerServiceImpl
     /**
      * Dispatches the multimedia response to the sender
      *
-     * @param builder  {@link MultipartBuilder}
+     * @param body     {@link MultipartBody}
      * @param endpoint String
      * @return String response
      */
-    protected String postMultipart(MultipartBuilder builder, String endpoint) {
+    protected String postMultipart(MultipartBody body, String endpoint) {
         try {
-            return execute(builder.build(), endpoint);
+            return execute(body, endpoint);
         } catch (IOException e) {
             log.error("Could not process the request " + e.getMessage());
             throw new RuntimeException(e);
@@ -163,6 +166,7 @@ public class ListenerServiceImpl
 
     /**
      * Returns the file as filestream
+     *
      * @param type String
      * @return {@link InputStream}
      */
