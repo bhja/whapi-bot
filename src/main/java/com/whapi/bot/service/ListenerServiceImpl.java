@@ -7,6 +7,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+import com.squareup.okhttp.ResponseBody;
 import com.whapi.bot.config.Config;
 import com.whapi.bot.model.BaseMessage;
 import com.whapi.bot.model.ContactMessage;
@@ -22,7 +23,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,17 +32,10 @@ import java.util.Map;
 public class ListenerServiceImpl
         implements ListenerService {
     public static final MediaType JSON = MediaType.parse("application/json");
-    private static Map<String, String> responseMap = new HashMap<>();
-
-    static {
-        responseMap.put("help", "text1");
-        responseMap.put("command", "text2");
-        responseMap.put("image", "Send image");
-        responseMap.put("video", "Send video");
-        responseMap.put("document", "Send document");
-        responseMap.put("unknown", "Unknown message");
-    }
-
+    private final static Map<String, String> responseMap = Map.of("help", "text1", "command", "text2", "image", "Send " +
+                                                                          "image",
+                                                                  "video", "Send video", "document", "Send document",
+                                                                  "unknown", "Unknown message");
     private final Config config;
     private final ObjectMapper objectMapper;
     private final OkHttpClient okHttpClient;
@@ -50,7 +43,7 @@ public class ListenerServiceImpl
     /**
      * Handles the processing of the request and sends the response based on the type.
      *
-     * @param messages
+     * @param messages {@link Message}
      */
     @Override
     public void processMessages(List<Message> messages) {
@@ -60,7 +53,7 @@ public class ListenerServiceImpl
                 if (message.isFromMe())
                     continue;
                 String chatId = message.getChatId();
-                String response;
+                String response ;
                 if (message.getType().equals("text")) {
                     //Extract the message sent irrespective of the character case.
                     String body = ((String) message.getText().get("body")).toLowerCase();
@@ -74,25 +67,27 @@ public class ListenerServiceImpl
                         }
                         //If the text is a multimedia request ,  process the request for multimedia
                         case "video", "image", "document" -> {
-                            File file = getFile(body);
-                            //Request body contains the file contents and the MediaType based on the filename extension
-                            RequestBody fileBody =
-                                    RequestBody.create(MediaType.parse(MediaTypeFactory.getMediaType(file.getName()).get().toString()),
-                                                       new FileInputStream(file).readAllBytes());
-                            MultipartBuilder multipartBody = new MultipartBuilder().type(MultipartBuilder.FORM)
-                                                                                   .addFormDataPart("to",
-                                                                                                    chatId)
-                                                                                   .addFormDataPart("media", file.getName(), fileBody)
-                                                                                   .addFormDataPart("caption",
-                                                                                                    caption);
-                            response = postMultipart(multipartBody, "messages/" + body);
-
+                                File file = getFile(body);
+                                //Request body contains the file contents and the MediaType based on the filename extension
+                                try(InputStream stream= new FileInputStream(file)) {
+                                    RequestBody fileBody =
+                                            RequestBody.create(MediaType.parse(MediaTypeFactory.getMediaType(file.getName()).toString()), stream.readAllBytes());
+                                    MultipartBuilder multipartBody = new MultipartBuilder().type(MultipartBuilder.FORM)
+                                                                                           .addFormDataPart("to",
+                                                                                                            chatId)
+                                                                                           .addFormDataPart("media", file.getName(), fileBody)
+                                                                                           .addFormDataPart("caption",
+                                                                                                            caption);
+                                    response = postMultipart(multipartBody, "messages/" + body);
+                                }
                         }
                         case "vcard" -> {
                             File file = getFile(body);
+                            try(InputStream stream = new FileInputStream(file)){
                             ContactMessage contactMessage =
-                                    ContactMessage.builder().name("Whapi test").to(chatId).vcard(new String(new FileInputStream(file).readAllBytes())).build();
+                                    ContactMessage.builder().name("Whapi test").to(chatId).vcard(new String(stream.readAllBytes())).build();
                             response = postJson(contactMessage, "messages/contact");
+                            }
 
                         }
                         default -> {
@@ -115,11 +110,11 @@ public class ListenerServiceImpl
     }
 
     /**
-     * Dispatches the message to the sender
+     * Dispatches the json message to the sender
      *
-     * @param message
-     * @param endpoint
-     * @return
+     * @param message Message to be sent
+     * @param endpoint endpoint mapping
+     * @return String
      */
     protected String postJson(BaseMessage message, String endpoint) {
         try {
@@ -133,10 +128,11 @@ public class ListenerServiceImpl
     /**
      * Executes the rest call and only if the response is success the response string is returned else
      * exception is thrown.
-     * @param requestBody
-     * @param endpoint
+     *
+     * @param requestBody request
+     * @param endpoint endpoint to invoke
      * @return String response
-     * @throws IOException
+     * @throws IOException thrown when file not found
      */
     protected String execute(RequestBody requestBody, String endpoint) throws IOException {
         Request request = new Request.Builder()
@@ -144,20 +140,21 @@ public class ListenerServiceImpl
                 .post(requestBody).addHeader("Authorization", "Bearer " + config.getApiToken())
                 .build();
         Response response = okHttpClient.newCall(request).execute();
-        if (response.isSuccessful()) {
-            return response.body().string();
-        } else {
-            log.warn("Issue with the request . Response code {} , reason  {}", response.code(),
-                     response.body().string());
-            throw new RuntimeException(response.message());
+        try(ResponseBody response0 = response.body()){
+            if (response.isSuccessful()) {
+                return response0.string();
+            } else {
+                log.warn("Issue with the request . Response code {} , reason  {}", response.code(),response0);
+                throw new RuntimeException(response.message());
+            }
         }
     }
 
     /**
-     * Dispatches the message to the sender
+     * Dispatches the multimedia response to the sender
      *
-     * @param builder
-     * @param endpoint
+     * @param builder {@link MultipartBuilder}
+     * @param endpoint String
      * @return String response
      */
     protected String postMultipart(MultipartBuilder builder, String endpoint) {
@@ -171,9 +168,10 @@ public class ListenerServiceImpl
 
     /**
      * Returns the file based on the type requested. Eg: video,image ,vcard.
-     * @param type
+     *
+     * @param type String type of file
      * @return {@link File}
-     * @throws IOException if type is not one of the known case an exception is throw
+     * @throws IOException  an exception is thrown if file processing issues /type is not handled
      */
     protected File getFile(String type) throws IOException {
         return switch (type) {
