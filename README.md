@@ -1,8 +1,8 @@
 ### Installation
 
 ### Requirement
-Java 17 or later
-Maven 3.3.2 or later
+    Java 17 or later
+    Maven 3.3.2 or later
 
 Configure the token as enviornment variable at runtime as illustrated below
 WHAPI_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
