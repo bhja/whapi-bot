@@ -8,20 +8,23 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ContactMessage extends BaseMessage{
+public class ContactMessage
+        extends BaseMessage {
 
     String vcard;
     String name;
+
     @Builder
     public ContactMessage(String to, String quoted, Integer ephemeral, String edit, List<String> mentions,
-                          Boolean viewOnce,String vcard,String name){
-        super(to,quoted,ephemeral,edit,mentions,viewOnce);
-        this.name= name;
-       this.vcard = vcard;
+                          Boolean viewOnce, String vcard, String name) {
+        super(to, quoted, ephemeral, edit, mentions, viewOnce);
+        this.name = name;
+        this.vcard = vcard;
     }
 }

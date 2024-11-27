@@ -16,15 +16,17 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class WebhookListener {
     private final ListenerService service;
+
     /**
      * Listens to the whatsapp events. The service processes the request and sends back a response as per defined
      * criteria
+     *
      * @param events {@link WebhookPayload}
      */
     @PostMapping("/messages")
     @Async
-    public void events(@RequestBody WebhookPayload events){
-        log.info("Received events [{}]" , events);
+    public void events(@RequestBody WebhookPayload events) {
+        log.info("Received events [{}]", events);
         service.processMessages(events.getMessages());
     }
 }

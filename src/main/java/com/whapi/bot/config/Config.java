@@ -15,8 +15,9 @@ public class Config {
     String whapiApiUrl;
     @Value("${whapi.api.token}")
     String apiToken;
+
     @Bean
-    public OkHttpClient httpClient(){
+    public OkHttpClient httpClient() {
         return new OkHttpClient();
     }
 

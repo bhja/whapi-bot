@@ -26,7 +26,7 @@ public class Message {
     @JsonProperty("timestamp")
     private long timestamp;
     @JsonProperty("text")
-    private Map<String,Object> text;
+    private Map<String, Object> text;
     @JsonProperty("from_name")
     private String fromName;
     @JsonProperty

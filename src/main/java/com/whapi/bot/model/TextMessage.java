@@ -16,7 +16,8 @@ import java.util.List;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TextMessage extends BaseMessage{
+public class TextMessage
+        extends BaseMessage {
     @Nonnull
     private String body;
     @JsonProperty("typing_time")
@@ -25,9 +26,9 @@ public class TextMessage extends BaseMessage{
     private Boolean noLinkPreview;
 
     @Builder
-    public TextMessage(String to,String quoted,Integer ephemeral,String edit,List<String> mentions,Boolean viewOnce,
-                       Boolean noLinkPreview,String body,Integer typingTime){
-        super(to,quoted,ephemeral,edit,mentions,viewOnce);
+    public TextMessage(String to, String quoted, Integer ephemeral, String edit, List<String> mentions, Boolean viewOnce,
+                       Boolean noLinkPreview, String body, Integer typingTime) {
+        super(to, quoted, ephemeral, edit, mentions, viewOnce);
         this.body = body;
         this.noLinkPreview = noLinkPreview;
         this.typingTime = typingTime;
