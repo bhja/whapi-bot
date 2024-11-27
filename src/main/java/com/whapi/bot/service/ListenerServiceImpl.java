@@ -15,14 +15,14 @@ import com.whapi.bot.model.TextMessage;
 import com.whapi.bot.model.webhook.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaTypeFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +36,9 @@ public class ListenerServiceImpl
                                                                           "image",
                                                                   "video", "Send video", "document", "Send document",
                                                                   "unknown", "Unknown message");
+
+    private final static Map<String,String> fileMap = Map.of("video","file_example_MP4_480_1_5MG.mp4","image","file_example_JPG_100kB.jpg","vcard","sample-vcard.txt",
+                                                             "document","file-example_PDF_500_kB.pdf");
     private final Config config;
     private final ObjectMapper objectMapper;
     private final OkHttpClient okHttpClient;
@@ -67,23 +70,22 @@ public class ListenerServiceImpl
                         }
                         //If the text is a multimedia request ,  process the request for multimedia
                         case "video", "image", "document" -> {
-                            File file = getFile(body);
+
                             //Request body contains the file contents and the MediaType based on the filename extension
-                            try (InputStream stream = new FileInputStream(file)) {
+                            try (InputStream stream = getFile(body)) {
                                 RequestBody fileBody =
-                                        RequestBody.create(MediaType.parse(MediaTypeFactory.getMediaType(file.getName()).toString()), stream.readAllBytes());
+                                        RequestBody.create(MediaType.parse(MediaTypeFactory.getMediaType(fileMap.get(body)).toString()), stream.readAllBytes());
                                 MultipartBuilder multipartBody = new MultipartBuilder().type(MultipartBuilder.FORM)
                                                                                        .addFormDataPart("to",
                                                                                                         chatId)
-                                                                                       .addFormDataPart("media", file.getName(), fileBody)
+                                                                                       .addFormDataPart("media", fileMap.get(body), fileBody)
                                                                                        .addFormDataPart("caption",
                                                                                                         caption);
                                 response = postMultipart(multipartBody, "messages/" + body);
                             }
                         }
                         case "vcard" -> {
-                            File file = getFile(body);
-                            try (InputStream stream = new FileInputStream(file)) {
+                            try (InputStream stream = getFile(body)) {
                                 ContactMessage contactMessage =
                                         ContactMessage.builder().name("Whapi test").to(chatId).vcard(new String(stream.readAllBytes())).build();
                                 response = postJson(contactMessage, "messages/contact");
@@ -166,24 +168,14 @@ public class ListenerServiceImpl
         }
     }
 
+
     /**
-     * Returns the file based on the type requested. Eg: video,image ,vcard.
-     *
-     * @param type String type of file
-     * @return {@link File}
-     * @throws IOException an exception is thrown if file processing issues /type is not handled
+     * Returns the filestream
+     * @param type String
+     * @return {@link InputStream}
      */
-    protected File getFile(String type) throws IOException {
-        return switch (type) {
-            case "image" -> new ClassPathResource(config.getFilePath() + File.separator + "file_example_JPG_100kB" +
-                                                          ".jpg").getFile();
-            case "video" ->
-                    new ClassPathResource(config.getFilePath() + File.separator + "file_example_MP4_480_1_5MG.mp4").getFile();
-            case "vcard" -> new ClassPathResource(config.getFilePath() + File.separator + "sample-vcard.txt").getFile();
-            case "document" ->
-                    new ClassPathResource(config.getFilePath() + File.separator + "file-example_PDF_500_kB.pdf").getFile();
-            default -> throw new IOException("Not handled file type " + type);
-        };
+    protected InputStream getFile(String type)  {
+        return getClass().getClassLoader().getResourceAsStream(config.getFilePath() + File.separator + fileMap.get(type));
     }
 
 }
